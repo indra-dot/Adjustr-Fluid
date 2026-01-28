@@ -318,13 +318,35 @@
                 <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
                     <h2 class="text-2xl font-black mb-6 text-amber-900 uppercase">Bicarbonate Deficit</h2>
                     <div class="space-y-4">
-                        <input type="number" id="acid_weight" value="70" class="w-full p-3 border rounded-xl font-bold">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-600 mb-1">Weight (kg)</label>
+                            <input type="number" id="acid_weight" value="70" class="w-full p-3 border rounded-xl font-bold">
+                        </div>
                         <div class="grid grid-cols-2 gap-4">
-                            <input type="number" id="acid_hco3_curr" value="12" class="w-full p-3 border rounded-xl font-bold border-amber-200">
-                            <input type="number" id="acid_hco3_target" value="18" class="w-full p-3 border rounded-xl font-bold">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-600 mb-1">Current HCO3 (mEq/L)</label>
+                                <input type="number" id="acid_hco3_curr" value="12" class="w-full p-3 border rounded-xl font-bold border-amber-200">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-600 mb-1">Target HCO3 (mEq/L)</label>
+                                <input type="number" id="acid_hco3_target" value="18" class="w-full p-3 border rounded-xl font-bold">
+                            </div>
                         </div>
                     </div>
                     <button onclick="calculateAcid()" class="w-full bg-amber-800 text-white py-4 rounded-xl font-black text-lg hover:bg-black transition-all mt-6 shadow-lg">CALCULATE DEFICIT</button>
+                    
+                    <!-- New Logic Explanation Section for Acid-Base -->
+                    <div class="mt-8 bg-amber-50 p-4 rounded-xl border border-amber-100">
+                        <h3 class="font-black text-amber-900 uppercase text-xs tracking-widest mb-2 border-b border-amber-200 pb-1">Algorithm Logic</h3>
+                        <p class="text-sm text-slate-600 leading-relaxed">
+                            Defisit Bikarbonat dihitung menggunakan estimasi Volume Distribusi (Vd) bikarbonat.
+                            <br><br>
+                            <span class="font-mono text-xs bg-white p-1 rounded font-bold border border-amber-200">Defisit = 0.5 x BB x (Target HCO3 - Current HCO3)</span>
+                            <br><br>
+                            <span class="text-xs italic text-slate-500">*Konstanta 0.5 merepresentasikan Vd HCO3 (~50% Berat Badan). Pada asidosis berat (pH < 7.0), Vd bisa meningkat (>80%), sehingga dosis mungkin perlu titrasi lebih lanjut.</span>
+                        </p>
+                    </div>
+
                 </section>
                 <div id="result_acid" class="hidden bg-amber-900 text-white p-8 rounded-3xl shadow-2xl flex flex-col justify-center text-center"></div>
             </div>
