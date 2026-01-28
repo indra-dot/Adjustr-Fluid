@@ -77,11 +77,11 @@
                         </div>
                         <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 space-y-4">
                             <label class="flex items-center font-bold text-slate-700 cursor-pointer">
-                                <input type="checkbox" id="is_fever" class="w-5 h-5 mr-3 rounded text-blue-600"> Fever (T > 37.0°C)
+                                <input type="checkbox" id="is_fever" class="w-5 h-5 mr-3 rounded text-blue-600"> Fever (T > 37.5°C)
                             </label>
                             <div id="fever_input" class="hidden animate-pulse">
-                                <label class="text-xs font-black text-slate-500 block mb-1">CORE TEMPERATURE: <span id="temp_val" class="text-blue-600">38.5</span>°C</label>
-                                <input type="range" id="temperature" min="37.1" max="42" step="0.1" value="38.5" class="w-full accent-blue-600">
+                                <label class="text-xs font-black text-slate-500 block mb-1">CORE TEMPERATURE: <span id="temp_val" class="text-blue-600">38.0</span>°C</label>
+                                <input type="range" id="temperature" min="37.6" max="42" step="0.1" value="38.0" class="w-full accent-blue-600">
                             </div>
                             <label class="flex items-center font-bold text-slate-700 cursor-pointer">
                                 <input type="checkbox" id="is_tachypnea" class="w-5 h-5 mr-3 rounded text-blue-600"> Tachypnea (RR > 20)
@@ -115,6 +115,26 @@
                     </div>
                 </div>
                 <div id="weight_warning" class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm font-bold flex items-center"></div>
+            </div>
+
+            <!-- Maintenance Pearls & Refs -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                <div class="bg-slate-100 p-6 rounded-2xl border border-slate-200">
+                    <h3 class="font-black text-slate-800 uppercase text-xs tracking-widest mb-4">Clinical Pearls: Maintenance</h3>
+                    <ul class="text-sm space-y-2 text-slate-700 list-disc pl-4">
+                        <li><strong>Dose:</strong> Standard 25-30 mL/kg/day; Restricted 20 mL/kg/day untuk CHF/CKD.</li>
+                        <li><strong>Obesity:</strong> Jika Berat Aktual > 1.2 x IBW, gunakan IBW untuk mencegah <i>volume overload</i>.</li>
+                        <li><strong>Fever Adjustment:</strong> Peningkatan IWL ~10-12% setiap kenaikan 1°C di atas 37.5°C.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-100 p-6 rounded-2xl border border-slate-200">
+                    <h3 class="font-black text-slate-800 uppercase text-xs tracking-widest mb-4">References</h3>
+                    <ul class="text-[10px] leading-relaxed text-slate-500 space-y-1">
+                        <li>1. Miller's Anesthesia, 9th Ed. (2020). Ch 59: Fluid Management.</li>
+                        <li>2. NICE Guidelines (2017). IV fluid therapy in adults in hospital.</li>
+                        <li>3. Devine Formula (1974) for Ideal Body Weight.</li>
+                    </ul>
+                </div>
             </div>
         </div>
 
@@ -151,9 +171,36 @@
                 </section>
             </div>
             <div id="result_hiper" class="hidden"></div>
+            
+            <!-- Hypernatremia Logic & Caveats -->
+            <div class="grid grid-cols-1 gap-6 mt-8">
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Mechanism -->
+                        <div>
+                            <h3 class="font-black text-blue-900 uppercase text-xs tracking-widest mb-3 border-b border-blue-100 pb-2">Algorithm Logic</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed">
+                                Kalkulator menggunakan <strong>Formula Adrogué-Madias</strong> untuk memprediksi perubahan konsentrasi Na serum (ΔNa) yang dihasilkan oleh pemberian 1 Liter infusat. 
+                                <br><br>
+                                <span class="font-mono text-xs bg-slate-100 p-1 rounded font-bold">ΔNa = ([Na]infus - [Na]serum) / (TBW + 1)</span>
+                            </p>
+                        </div>
+                        
+                        <!-- Caveats -->
+                        <div>
+                            <h3 class="font-black text-red-900 uppercase text-xs tracking-widest mb-3 border-b border-red-100 pb-2">Clinical Caveats & Safety</h3>
+                            <ul class="text-sm space-y-3 text-slate-700 list-disc pl-4">
+                                <li><strong>Asumsi Sistem Tertutup:</strong> Formula menghitung defisit pada volume statis, mengabaikan <i>ongoing losses</i> (IWL, poliuria) maupun intake tambahan. Hasil kalkulasi adalah <u>estimasi defisit dasar</u>; total cairan harian harus ditambahkan dengan estimasi <i>losses</i>.</li>
+                                <li><strong>Dinamika Ginjal:</strong> Algoritma tidak memperhitungkan kemampuan ginjal dalam ekskresi natrium (desalinasi) atau retensi air bebas yang bersifat dinamis.</li>
+                                <li><strong>Mandatory Monitoring:</strong> Wajib evaluasi ulang Na serum tiap 6-12 jam. <strong>Laju Koreksi Aman:</strong> 8-12 mEq/L per hari atau 0.5 mEq/L/jam untuk mencegah edema serebral.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Tab 3: Hyponatremia (REVISED STRATEGY COLUMN) -->
+        <!-- Tab 3: Hyponatremia -->
         <div id="tab-hipo" class="tab-content space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
@@ -190,24 +237,39 @@
                 </section>
             </div>
             <div id="result_hipo" class="hidden"></div>
+            
+            <!-- Hyponatremia Pearls & Refs -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                <div class="bg-slate-100 p-6 rounded-2xl border border-slate-200">
+                    <h3 class="font-black text-slate-800 uppercase text-xs tracking-widest mb-4">Clinical Pearls: Hyponatremia</h3>
+                    <ul class="text-sm space-y-2 text-slate-700 list-disc pl-4">
+                        <li><strong>ODS Risk:</strong> Jangan koreksi > 8-10 mEq/L dalam 24 jam pertama, terutama pada malnutrisi, alkoholisme, atau hipokalemia.</li>
+                        <li><strong>Severe Symptoms:</strong> (Kejang/Koma) Bolus 100-150 mL NaCl 3% IV dalam 20 menit. Target naik 4-6 mEq/L akut.</li>
+                        <li><strong>SIADH:</strong> Restriksi cairan adalah lini pertama. Vaptan/Urea untuk kasus refrakter.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-100 p-6 rounded-2xl border border-slate-200">
+                    <h3 class="font-black text-slate-800 uppercase text-xs tracking-widest mb-4">References</h3>
+                    <ul class="text-[10px] leading-relaxed text-slate-500 space-y-1">
+                        <li>1. Spasovski G, et al. (2014). Eur J Endocrinol. ESE/ESICM Guidelines.</li>
+                        <li>2. Verbalis JG, et al. (2013). Diagnosis & Treatment. Am J Med.</li>
+                        <li>3. Adrogué HJ, Madias NE. (2000). Hyponatremia. NEJM.</li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
-        <!-- TAB 4: AKI WORKUP (BUN/SC Ratio Only) -->
+        <!-- TAB 4: AKI WORKUP -->
         <div id="tab-aki" class="tab-content space-y-6">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Inputs Section -->
                 <section class="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
                     <div class="flex justify-between items-start mb-6">
                         <h2 class="text-2xl font-black text-emerald-900 uppercase">AKI Diagnostics</h2>
                         <div class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Bedside Mode</div>
                     </div>
-
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                         <!-- Serum Metrics -->
                          <div class="md:col-span-2 space-y-4 p-6 bg-blue-50 rounded-2xl border border-blue-100">
-                            <h3 class="font-bold text-blue-900 text-sm uppercase flex items-center gap-2">
-                                🩸 Serum Metrics
-                            </h3>
+                            <h3 class="font-bold text-blue-900 text-sm uppercase flex items-center gap-2">🩸 Serum Metrics</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-xs font-black text-slate-500 uppercase mb-1">Serum Urea / BUN (mg/dL)</label>
@@ -222,63 +284,68 @@
                     </div>
                     <button onclick="calculateAKI()" class="w-full bg-emerald-800 text-white py-4 rounded-xl font-black text-lg hover:bg-black transition-all mt-8 shadow-lg">CALCULATE RATIO</button>
                 </section>
-
-                <!-- Results Section -->
-                <div id="result_aki" class="hidden bg-emerald-900 text-white p-6 rounded-3xl shadow-2xl space-y-6 flex flex-col justify-center">
+                <div id="result_aki" class="hidden bg-emerald-900 text-white p-6 rounded-3xl shadow-2xl flex flex-col justify-center">
                     <div id="buncr_container" class="text-center p-4 rounded-2xl bg-white/10">
                         <div id="buncr_display"></div>
                     </div>
                 </div>
             </div>
-
-            <!-- Clinical Pearls AKI -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+            
+            <!-- AKI Pearls & Refs -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                 <div class="bg-slate-100 p-6 rounded-2xl border border-slate-200">
-                    <h3 class="font-black text-slate-800 uppercase text-xs tracking-widest mb-4">Ratio Interpretation</h3>
-                    <ul class="text-sm space-y-3 text-slate-700 list-disc pl-4">
-                        <li><strong>> 20:1</strong> → <strong>Pre-renal</strong>. Reabsorpsi urea meningkat beriringan dengan reabsorpsi air/natrium di tubulus proksimal.</li>
-                        <li><strong>10-20:1</strong> → <strong>Normal</strong> atau Post-Renal.</li>
-                        <li><strong>< 10:1</strong> → <strong>Intrinsic (ATN)</strong>. Tubulus rusak gagal mereabsorpsi urea.</li>
+                    <h3 class="font-black text-slate-800 uppercase text-xs tracking-widest mb-4">Clinical Pearls: AKI</h3>
+                    <ul class="text-sm space-y-2 text-slate-700 list-disc pl-4">
+                        <li><strong>Ratio > 20:1:</strong> Kuat mengarah ke Pre-renal (Dehidrasi, CHF, Hipoperfusi). Ginjal normal menyerap urea kembali.</li>
+                        <li><strong>False High:</strong> GI Bleeding (protein load), Steroid (katabolisme), Diet tinggi protein.</li>
+                        <li><strong>ATN:</strong> Rasio mendekati 10-15:1 karena tubulus rusak tidak bisa mereabsorpsi urea.</li>
                     </ul>
                 </div>
-                <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-                    <h3 class="font-black text-blue-800 uppercase text-xs tracking-widest mb-4">Diagnostic Caveats</h3>
-                    <p class="text-sm text-slate-600 leading-relaxed mb-2">
-                        <strong>False High (>20:1):</strong> Waspada pada GI Bleeding (beban protein darah), penggunaan Steroid (katabolisme), atau diet tinggi protein.
-                    </p>
-                    <p class="text-sm text-slate-600 leading-relaxed">
-                        <strong>False Low:</strong> Malnutrisi berat (produksi urea rendah) atau penyakit hati berat.
-                    </p>
+                <div class="bg-slate-100 p-6 rounded-2xl border border-slate-200">
+                    <h3 class="font-black text-slate-800 uppercase text-xs tracking-widest mb-4">References</h3>
+                    <ul class="text-[10px] leading-relaxed text-slate-500 space-y-1">
+                        <li>1. KDIGO (2012). Clinical Practice Guideline for AKI.</li>
+                        <li>2. Uchino S, et al. (2012). Diagnostic performance of biomarkers. Curr Opin Crit Care.</li>
+                        <li>3. Harrison's Principles of Internal Medicine, 21st Ed.</li>
+                    </ul>
                 </div>
             </div>
         </div>
 
-        <!-- Tab 5: ACID-BASE (HCO3 Deficit) -->
+        <!-- Tab 5: ACID-BASE -->
         <div id="tab-acid" class="tab-content space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
                     <h2 class="text-2xl font-black mb-6 text-amber-900 uppercase">Bicarbonate Deficit</h2>
                     <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-bold text-slate-600 mb-1">Weight (kg)</label>
-                            <input type="number" id="acid_weight" value="70" class="w-full p-3 border rounded-xl font-bold">
-                        </div>
+                        <input type="number" id="acid_weight" value="70" class="w-full p-3 border rounded-xl font-bold">
                         <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-bold text-slate-600 mb-1">Current HCO3 (mEq/L)</label>
-                                <input type="number" id="acid_hco3_curr" value="12" class="w-full p-3 border rounded-xl font-bold border-amber-200">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-600 mb-1">Target HCO3 (mEq/L)</label>
-                                <input type="number" id="acid_hco3_target" value="18" class="w-full p-3 border rounded-xl font-bold">
-                            </div>
+                            <input type="number" id="acid_hco3_curr" value="12" class="w-full p-3 border rounded-xl font-bold border-amber-200">
+                            <input type="number" id="acid_hco3_target" value="18" class="w-full p-3 border rounded-xl font-bold">
                         </div>
                     </div>
                     <button onclick="calculateAcid()" class="w-full bg-amber-800 text-white py-4 rounded-xl font-black text-lg hover:bg-black transition-all mt-6 shadow-lg">CALCULATE DEFICIT</button>
                 </section>
-
-                <div id="result_acid" class="hidden bg-amber-900 text-white p-8 rounded-3xl shadow-2xl space-y-6 flex flex-col justify-center text-center">
-                    <!-- Results here -->
+                <div id="result_acid" class="hidden bg-amber-900 text-white p-8 rounded-3xl shadow-2xl flex flex-col justify-center text-center"></div>
+            </div>
+            
+            <!-- Acid-Base Pearls & Refs -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                <div class="bg-slate-100 p-6 rounded-2xl border border-slate-200">
+                    <h3 class="font-black text-slate-800 uppercase text-xs tracking-widest mb-4">Clinical Pearls: Metabolic Acidosis</h3>
+                    <ul class="text-sm space-y-2 text-slate-700 list-disc pl-4">
+                        <li><strong>Target HCO3:</strong> Cukup 15-18 mEq/L untuk buffer pH > 7.20. Jangan targetkan normal (24 mEq/L) risiko alkalosis metabolik & hipokalsemia.</li>
+                        <li><strong>Vd HCO3:</strong> Gunakan 0.5 x BB (Estimasi TBW). Pada asidosis berat (pH < 7.0), Vd bisa naik sampai 0.8 x BB.</li>
+                        <li><strong>Meylon 8.4%:</strong> 1 mL = 1 mEq. Awas beban natrium dan hiperosmolaritas.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-100 p-6 rounded-2xl border border-slate-200">
+                    <h3 class="font-black text-slate-800 uppercase text-xs tracking-widest mb-4">References</h3>
+                    <ul class="text-[10px] leading-relaxed text-slate-500 space-y-1">
+                        <li>1. Sabatine MS. (2019). Pocket Medicine. 7th Ed.</li>
+                        <li>2. Adrogué HJ, Madias NE. (1998). Management of life-threatening acid-base disorders. NEJM.</li>
+                        <li>3. Kraut JA, Madias NE. (2012). Treatment of acute metabolic acidosis. Nat Rev Nephrol.</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -291,14 +358,9 @@
     </div>
 
     <script>
-        // --- LOGIC ENGINE ---
         const MedicalLogic = {
             calculateTBW: (weight, gender, ageGroup) => {
-                const map = {
-                    anak: 0.6,
-                    dewasa: gender === 'Pria' ? 0.6 : 0.5,
-                    lansia: gender === 'Pria' ? 0.5 : 0.45
-                };
+                const map = { anak: 0.6, dewasa: gender === 'Pria' ? 0.6 : 0.5, lansia: gender === 'Pria' ? 0.5 : 0.45 };
                 return weight * (map[ageGroup] || 0.6);
             },
             calculateIBW: (heightCm, gender) => {
@@ -308,7 +370,6 @@
             }
         };
 
-        // --- UI HANDLERS ---
         function openTab(evt, tabName) {
             const contents = document.getElementsByClassName("tab-content");
             for (let i = 0; i < contents.length; i++) contents[i].style.display = "none";
@@ -317,8 +378,15 @@
             document.getElementById(tabName).style.display = "block";
             evt.currentTarget.classList.add("active-tab");
         }
+        
+        // Listener for Fever toggle
+        document.getElementById('is_fever').addEventListener('change', e => {
+            document.getElementById('fever_input').style.display = e.target.checked ? 'block' : 'none';
+        });
+        document.getElementById('temperature').addEventListener('input', e => {
+            document.getElementById('temp_val').innerText = e.target.value;
+        });
 
-        // Maintenance
         function calculateMaintenance() {
             const gender = document.querySelector('input[name="gender"]:checked').value;
             const height = parseFloat(document.getElementById('height').value);
@@ -334,7 +402,10 @@
             const baseRate = status === 'Normal' ? 30 : 20;
             let maintenance = weightForCalc * baseRate;
 
-            if (isFever) maintenance += (temp - 37.0) * 0.125 * maintenance;
+            // Updated Logic: Only calculate if temp > 37.5 as per clinical context
+            if (isFever && temp > 37.5) {
+                maintenance += (temp - 37.0) * 0.125 * maintenance; 
+            }
             if (isTachypnea) maintenance += 0.15 * maintenance;
             const total = maintenance + ongoing;
 
@@ -346,55 +417,28 @@
             warningEl.innerHTML = weightActual > (1.2 * ibw) ? `OBESITY ALERT: Using IBW (${Math.round(ibw)}kg).` : "Using Actual Weight.";
         }
 
-        // AKI Calculation (BUN/Cr Ratio ONLY)
         function calculateAKI() {
             const purea = parseFloat(document.getElementById('aki_purea').value) || 0;
             const pcr = parseFloat(document.getElementById('aki_pcr').value) || 0;
-
             const resDiv = document.getElementById('result_aki');
             const bunCrDisplay = document.getElementById('buncr_display');
-            
             resDiv.classList.remove('hidden');
-
-            let ratio = 0;
-            let ratioInterp = "Data Incomplete";
-            
-            if(pcr > 0) {
-                ratio = purea / pcr;
-                if(ratio > 20) ratioInterp = "Pre-Renal Etiology";
-                else if(ratio >= 10 && ratio <= 20) ratioInterp = "Normal / Post-renal";
-                else ratioInterp = "Intrinsic Renal (ATN)";
-            }
-            
+            let ratio = pcr > 0 ? purea / pcr : 0;
+            let ratioInterp = ratio > 20 ? "Pre-Renal Etiology" : (ratio < 10 ? "Intrinsic Renal (ATN)" : "Normal / Post-renal");
             let colorClass = ratio > 20 ? "text-emerald-300" : (ratio < 10 ? "text-red-300" : "text-white");
-
-            bunCrDisplay.innerHTML = `
-                <p class="text-xs uppercase font-black text-white/60 mb-2">BUN : Creatinine Ratio</p>
-                <p class="text-6xl font-black mb-2">${ratio.toFixed(1)}</p>
-                <p class="text-xl font-bold ${colorClass}">${ratioInterp}</p>
-            `;
+            bunCrDisplay.innerHTML = `<p class="text-xs uppercase font-black text-white/60 mb-2">BUN : Creatinine Ratio</p><p class="text-6xl font-black mb-2">${ratio.toFixed(1)}</p><p class="text-xl font-bold ${colorClass}">${ratioInterp}</p>`;
         }
 
-        // Acid-Base Calculation
         function calculateAcid() {
             const weight = parseFloat(document.getElementById('acid_weight').value);
             const hco3Curr = parseFloat(document.getElementById('acid_hco3_curr').value);
             const hco3Target = parseFloat(document.getElementById('acid_hco3_target').value);
-
             const deficit = 0.5 * weight * (hco3Target - hco3Curr);
             const resDiv = document.getElementById('result_acid');
             resDiv.classList.remove('hidden');
-
-            resDiv.innerHTML = `
-                <div>
-                    <p class="text-xs uppercase font-black text-amber-300 mb-2">HCO3 Deficit</p>
-                    <p class="text-6xl font-black mb-2">${Math.round(deficit)} <span class="text-2xl tracking-tighter">mEq</span></p>
-                    <p class="text-sm italic opacity-80 mt-4 text-amber-100">Estimasi dosis Natrium Bikarbonat untuk mencapai target serum HCO3 ${hco3Target} mEq/L.</p>
-                </div>
-            `;
+            resDiv.innerHTML = `<div><p class="text-xs uppercase font-black text-amber-300 mb-2">HCO3 Deficit</p><p class="text-6xl font-black mb-2">${Math.round(deficit)} <span class="text-2xl tracking-tighter">mEq</span></p></div>`;
         }
 
-        // Hyper/Hypo Na Functions
         function calculateHyper() {
             const weight = parseFloat(document.getElementById('hiper_weight').value);
             const naCurrent = parseFloat(document.getElementById('hiper_na_current').value);
@@ -418,7 +462,6 @@
             resDiv.classList.remove('hidden');
             resDiv.innerHTML = `<div class="bg-indigo-900 text-white p-6 rounded-2xl mt-4 text-center">Predicted Na Increase per 1L: <b>${deltaNa.toFixed(2)} mEq/L</b></div>`;
         }
-
         document.getElementById("defaultOpen").click();
     </script>
 </body>
