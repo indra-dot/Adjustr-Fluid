@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADJUSTR FLUID</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .active-tab { border-bottom: 4px solid #1e40af; color: #1e40af; background: #f8fafc; }
+        input[type="number"]::-webkit-inner-spin-button { opacity: 1; }
+        .recommended-metric { border: 2px solid #10b981; background-color: rgba(16, 185, 129, 0.1); }
+        .dimmed-metric { opacity: 0.6; filter: grayscale(100%); }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-900">
+
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Brand Header -->
+        <header class="mb-10 flex justify-between items-center border-b pb-6">
+            <div>
+                <h1 class="text-4xl font-black text-blue-900 tracking-tighter uppercase">ADJUSTR <span class="text-blue-500 font-light">FLUID</span></h1>
+                <p class="text-slate-500 font-medium italic text-sm">Precision Fluid and Electrolyte Management</p>
+            </div>
+            <div class="hidden md:block text-right">
+                <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Internal Medicine Expert Edition</span>
+            </div>
+        </header>
+
+        <!-- Tabs Navigation -->
+        <nav class="flex border-b-2 border-slate-200 mb-8 bg-white shadow-sm rounded-t-xl overflow-x-auto">
+            <button onclick="openTab(event, 'tab-cairan')" class="tab-link flex-1 min-w-[120px] px-4 py-5 font-bold text-slate-500 hover:text-blue-700 transition-all border-r border-slate-100 active-tab" id="defaultOpen">Cairan Maintenance 24 jam pasien</button>
+            <button onclick="openTab(event, 'tab-hiper')" class="tab-link flex-1 min-w-[120px] px-4 py-5 font-bold text-slate-500 hover:text-blue-700 transition-all border-r border-slate-100">HYPER-NA</button>
+            <button onclick="openTab(event, 'tab-hipo')" class="tab-link flex-1 min-w-[120px] px-4 py-5 font-bold text-slate-500 hover:text-blue-700 transition-all border-r border-slate-100">HYPO-NA</button>
+            <button onclick="openTab(event, 'tab-aki')" class="tab-link flex-1 min-w-[120px] px-4 py-5 font-bold text-slate-500 hover:text-blue-700 transition-all border-r border-slate-100">AKI WORKUP</button>
+            <button onclick="openTab(event, 'tab-acid')" class="tab-link flex-1 min-w-[120px] px-4 py-5 font-bold text-slate-500 hover:text-blue-700 transition-all">ACID-BASE</button>
+        </nav>
+
+        <!-- Tab 1: Maintenance -->
+        <div id="tab-cairan" class="tab-content active space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-lg font-black mb-5 text-slate-700 border-b pb-2 uppercase tracking-tight">Patient Metrics</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-600 mb-1">Biological Sex</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="cursor-pointer border-2 p-2 rounded-lg text-center font-bold text-sm">
+                                    <input type="radio" name="gender" value="Pria" checked class="mr-2"> MALE
+                                </label>
+                                <label class="cursor-pointer border-2 p-2 rounded-lg text-center font-bold text-sm">
+                                    <input type="radio" name="gender" value="Wanita" class="mr-2"> FEMALE
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-600 mb-1">Height (cm)</label>
+                            <input type="number" id="height" value="170" class="w-full p-3 bg-slate-50 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-600 mb-1">Actual Weight (kg)</label>
+                            <input type="number" id="weight" value="70" class="w-full p-3 bg-slate-50 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-bold">
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-lg font-black mb-5 text-slate-700 border-b pb-2 uppercase tracking-tight">Clinical Modifiers</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-600 mb-1">Organ Dysfunction</label>
+                            <select id="clinical_status" class="w-full p-3 bg-slate-50 border rounded-xl font-bold">
+                                <option value="Normal">None (Standard 30 mL/kg)</option>
+                                <option value="CHF/CKD">CHF / CKD / ESRD (Restricted 20 mL/kg)</option>
+                            </select>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 space-y-4">
+                            <label class="flex items-center font-bold text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="is_fever" class="w-5 h-5 mr-3 rounded text-blue-600"> Fever (T > 37.0°C)
+                            </label>
+                            <div id="fever_input" class="hidden animate-pulse">
+                                <label class="text-xs font-black text-slate-500 block mb-1">CORE TEMPERATURE: <span id="temp_val" class="text-blue-600">38.5</span>°C</label>
+                                <input type="range" id="temperature" min="37.1" max="42" step="0.1" value="38.5" class="w-full accent-blue-600">
+                            </div>
+                            <label class="flex items-center font-bold text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="is_tachypnea" class="w-5 h-5 mr-3 rounded text-blue-600"> Tachypnea (RR > 20)
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-lg font-black mb-5 text-slate-700 border-b pb-2 uppercase tracking-tight">Output/Losses</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-600 mb-1">Ongoing Losses 24h (mL)</label>
+                            <input type="number" id="ongoing_losses" value="0" class="w-full p-3 bg-slate-50 border rounded-xl font-bold mb-4" placeholder="NGT, Polyuria, Drains">
+                        </div>
+                        <button onclick="calculateMaintenance()" class="w-full bg-blue-900 text-white py-4 rounded-xl font-black text-lg hover:bg-black transition-all shadow-xl">RUN CALCULATION</button>
+                    </div>
+                </section>
+            </div>
+
+            <div id="result_cairan" class="hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div class="bg-blue-900 text-white p-8 rounded-3xl shadow-2xl flex flex-col md:flex-row justify-between items-center gap-8">
+                    <div class="text-center md:text-left">
+                        <p class="text-blue-300 font-bold uppercase tracking-widest text-sm mb-2">Total Volume Target</p>
+                        <p id="res_total_fluid" class="text-5xl font-black">0 mL/24h</p>
+                    </div>
+                    <div class="h-16 w-px bg-blue-800 hidden md:block"></div>
+                    <div class="text-center md:text-left">
+                        <p class="text-blue-300 font-bold uppercase tracking-widest text-sm mb-2">Infusion Flow Rate</p>
+                        <p id="res_infusion_rate" class="text-5xl font-black text-blue-400">0 mL/hr</p>
+                    </div>
+                </div>
+                <div id="weight_warning" class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm font-bold flex items-center"></div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Hypernatremia -->
+        <div id="tab-hiper" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
+                    <h2 class="text-2xl font-black mb-6 text-red-900 uppercase">Hypernatremia Workup</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-600 mb-1">Actual Weight (kg)</label>
+                            <input type="number" id="hiper_weight" value="70" class="w-full p-3 border rounded-xl font-bold">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-600 mb-1">Serum [Na] Current</label>
+                                <input type="number" id="hiper_na_current" value="155" class="w-full p-3 border rounded-xl font-bold border-red-200">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-600 mb-1">Serum [Na] Target</label>
+                                <input type="number" id="hiper_na_target" value="140" class="w-full p-3 border rounded-xl font-bold">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
+                    <h2 class="text-2xl font-black mb-6 text-slate-800 uppercase">Infusate</h2>
+                    <select id="hiper_fluid" class="w-full p-3 border rounded-xl font-bold bg-blue-50 mb-4">
+                        <option value="0">D5W (Pure Free Water - 0 mEq/L Na)</option>
+                        <option value="38.5">D5 1/4 NS (38.5 mEq/L Na)</option>
+                        <option value="77">0.45% NaCl (77 mEq/L Na)</option>
+                    </select>
+                    <button onclick="calculateHyper()" class="w-full bg-red-700 text-white py-4 rounded-xl font-black text-lg hover:bg-black transition-all">ESTIMATE WATER DEFICIT</button>
+                </section>
+            </div>
+            <div id="result_hiper" class="hidden"></div>
+        </div>
+
+        <!-- Tab 3: Hyponatremia (REVISED STRATEGY COLUMN) -->
+        <div id="tab-hipo" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
+                    <h2 class="text-2xl font-black mb-6 text-indigo-900 uppercase">Hyponatremia Workup</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-600 mb-1">Body Weight (kg)</label>
+                            <input type="number" id="hipo_weight" value="70" class="w-full p-3 border rounded-xl font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-600 mb-1">Current Serum [Na] (mEq/L)</label>
+                            <input type="number" id="hipo_na_current" value="120" class="w-full p-3 border rounded-xl font-bold border-indigo-200">
+                        </div>
+                    </div>
+                </section>
+                <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
+                    <h2 class="text-2xl font-black mb-6 text-slate-800 uppercase">Correction Strategy</h2>
+                    <div class="space-y-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-600 mb-1">Target Rate (mEq/L/hr)</label>
+                            <input type="number" id="hipo_rate_target" value="0.5" step="0.1" class="w-full p-3 border rounded-xl font-bold bg-indigo-50/50">
+                            <p class="text-xs text-slate-400 mt-1 font-medium">Safe Limit: 0.5 - 1.0 mEq/L/hr to prevent ODS</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-600 mb-1">Infusate Type</label>
+                            <select id="hipo_fluid" class="w-full p-3 border rounded-xl font-bold bg-indigo-50">
+                                <option value="513">3% NaCl (Hypertonic - 513 mEq/L)</option>
+                                <option value="154" selected>0.9% NaCl (Normal Saline - 154 mEq/L)</option>
+                            </select>
+                            <p class="text-xs text-slate-400 mt-1 font-medium">3% for severe/symptomatic, 0.9% for mild/hypovolemic</p>
+                        </div>
+                    </div>
+                    <button onclick="calculateHypo()" class="w-full bg-indigo-900 text-white py-4 rounded-xl font-black text-lg hover:bg-black transition-all">CALCULATE RATE</button>
+                </section>
+            </div>
+            <div id="result_hipo" class="hidden"></div>
+        </div>
+
+        <!-- TAB 4: AKI WORKUP (BUN/SC Ratio Only) -->
+        <div id="tab-aki" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Inputs Section -->
+                <section class="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-start mb-6">
+                        <h2 class="text-2xl font-black text-emerald-900 uppercase">AKI Diagnostics</h2>
+                        <div class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Bedside Mode</div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                         <!-- Serum Metrics -->
+                         <div class="md:col-span-2 space-y-4 p-6 bg-blue-50 rounded-2xl border border-blue-100">
+                            <h3 class="font-bold text-blue-900 text-sm uppercase flex items-center gap-2">
+                                🩸 Serum Metrics
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-black text-slate-500 uppercase mb-1">Serum Urea / BUN (mg/dL)</label>
+                                    <input type="number" id="aki_purea" value="100" class="w-full p-3 border rounded-xl font-bold focus:ring-2 focus:ring-emerald-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-black text-slate-500 uppercase mb-1">Serum Creatinine (mg/dL)</label>
+                                    <input type="number" id="aki_pcr" value="2.5" step="0.1" class="w-full p-3 border rounded-xl font-bold">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="calculateAKI()" class="w-full bg-emerald-800 text-white py-4 rounded-xl font-black text-lg hover:bg-black transition-all mt-8 shadow-lg">CALCULATE RATIO</button>
+                </section>
+
+                <!-- Results Section -->
+                <div id="result_aki" class="hidden bg-emerald-900 text-white p-6 rounded-3xl shadow-2xl space-y-6 flex flex-col justify-center">
+                    <div id="buncr_container" class="text-center p-4 rounded-2xl bg-white/10">
+                        <div id="buncr_display"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clinical Pearls AKI -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+                <div class="bg-slate-100 p-6 rounded-2xl border border-slate-200">
+                    <h3 class="font-black text-slate-800 uppercase text-xs tracking-widest mb-4">Ratio Interpretation</h3>
+                    <ul class="text-sm space-y-3 text-slate-700 list-disc pl-4">
+                        <li><strong>> 20:1</strong> → <strong>Pre-renal</strong>. Reabsorpsi urea meningkat beriringan dengan reabsorpsi air/natrium di tubulus proksimal.</li>
+                        <li><strong>10-20:1</strong> → <strong>Normal</strong> atau Post-Renal.</li>
+                        <li><strong>< 10:1</strong> → <strong>Intrinsic (ATN)</strong>. Tubulus rusak gagal mereabsorpsi urea.</li>
+                    </ul>
+                </div>
+                <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
+                    <h3 class="font-black text-blue-800 uppercase text-xs tracking-widest mb-4">Diagnostic Caveats</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-2">
+                        <strong>False High (>20:1):</strong> Waspada pada GI Bleeding (beban protein darah), penggunaan Steroid (katabolisme), atau diet tinggi protein.
+                    </p>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        <strong>False Low:</strong> Malnutrisi berat (produksi urea rendah) atau penyakit hati berat.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 5: ACID-BASE (HCO3 Deficit) -->
+        <div id="tab-acid" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
+                    <h2 class="text-2xl font-black mb-6 text-amber-900 uppercase">Bicarbonate Deficit</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-600 mb-1">Weight (kg)</label>
+                            <input type="number" id="acid_weight" value="70" class="w-full p-3 border rounded-xl font-bold">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-600 mb-1">Current HCO3 (mEq/L)</label>
+                                <input type="number" id="acid_hco3_curr" value="12" class="w-full p-3 border rounded-xl font-bold border-amber-200">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-600 mb-1">Target HCO3 (mEq/L)</label>
+                                <input type="number" id="acid_hco3_target" value="18" class="w-full p-3 border rounded-xl font-bold">
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="calculateAcid()" class="w-full bg-amber-800 text-white py-4 rounded-xl font-black text-lg hover:bg-black transition-all mt-6 shadow-lg">CALCULATE DEFICIT</button>
+                </section>
+
+                <div id="result_acid" class="hidden bg-amber-900 text-white p-8 rounded-3xl shadow-2xl space-y-6 flex flex-col justify-center text-center">
+                    <!-- Results here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 text-center text-slate-400 text-sm border-t pt-8">
+            <p class="mb-2 uppercase tracking-tighter font-black text-slate-300 italic">This tool is for educational purposes. Clinical judgment required.</p>
+            <p class="font-medium text-slate-500 italic">© 2026 - IWP</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- LOGIC ENGINE ---
+        const MedicalLogic = {
+            calculateTBW: (weight, gender, ageGroup) => {
+                const map = {
+                    anak: 0.6,
+                    dewasa: gender === 'Pria' ? 0.6 : 0.5,
+                    lansia: gender === 'Pria' ? 0.5 : 0.45
+                };
+                return weight * (map[ageGroup] || 0.6);
+            },
+            calculateIBW: (heightCm, gender) => {
+                const heightIn = heightCm * 0.393701;
+                const base = gender === 'Pria' ? 50 : 45.5;
+                return base + 2.3 * (heightIn - 60);
+            }
+        };
+
+        // --- UI HANDLERS ---
+        function openTab(evt, tabName) {
+            const contents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < contents.length; i++) contents[i].style.display = "none";
+            const links = document.getElementsByClassName("tab-link");
+            for (let i = 0; i < links.length; i++) links[i].classList.remove("active-tab");
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.classList.add("active-tab");
+        }
+
+        // Maintenance
+        function calculateMaintenance() {
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            const height = parseFloat(document.getElementById('height').value);
+            const weightActual = parseFloat(document.getElementById('weight').value);
+            const status = document.getElementById('clinical_status').value;
+            const isFever = document.getElementById('is_fever').checked;
+            const temp = parseFloat(document.getElementById('temperature').value);
+            const isTachypnea = document.getElementById('is_tachypnea').checked;
+            const ongoing = parseFloat(document.getElementById('ongoing_losses').value) || 0;
+
+            const ibw = MedicalLogic.calculateIBW(height, gender);
+            const weightForCalc = weightActual > (1.2 * ibw) ? ibw : weightActual;
+            const baseRate = status === 'Normal' ? 30 : 20;
+            let maintenance = weightForCalc * baseRate;
+
+            if (isFever) maintenance += (temp - 37.0) * 0.125 * maintenance;
+            if (isTachypnea) maintenance += 0.15 * maintenance;
+            const total = maintenance + ongoing;
+
+            document.getElementById('result_cairan').classList.remove('hidden');
+            document.getElementById('res_total_fluid').innerText = `${Math.round(total)} mL/24h`;
+            document.getElementById('res_infusion_rate').innerText = `${(total / 24).toFixed(1)} mL/hr`;
+            
+            const warningEl = document.getElementById('weight_warning');
+            warningEl.innerHTML = weightActual > (1.2 * ibw) ? `OBESITY ALERT: Using IBW (${Math.round(ibw)}kg).` : "Using Actual Weight.";
+        }
+
+        // AKI Calculation (BUN/Cr Ratio ONLY)
+        function calculateAKI() {
+            const purea = parseFloat(document.getElementById('aki_purea').value) || 0;
+            const pcr = parseFloat(document.getElementById('aki_pcr').value) || 0;
+
+            const resDiv = document.getElementById('result_aki');
+            const bunCrDisplay = document.getElementById('buncr_display');
+            
+            resDiv.classList.remove('hidden');
+
+            let ratio = 0;
+            let ratioInterp = "Data Incomplete";
+            
+            if(pcr > 0) {
+                ratio = purea / pcr;
+                if(ratio > 20) ratioInterp = "Pre-Renal Etiology";
+                else if(ratio >= 10 && ratio <= 20) ratioInterp = "Normal / Post-renal";
+                else ratioInterp = "Intrinsic Renal (ATN)";
+            }
+            
+            let colorClass = ratio > 20 ? "text-emerald-300" : (ratio < 10 ? "text-red-300" : "text-white");
+
+            bunCrDisplay.innerHTML = `
+                <p class="text-xs uppercase font-black text-white/60 mb-2">BUN : Creatinine Ratio</p>
+                <p class="text-6xl font-black mb-2">${ratio.toFixed(1)}</p>
+                <p class="text-xl font-bold ${colorClass}">${ratioInterp}</p>
+            `;
+        }
+
+        // Acid-Base Calculation
+        function calculateAcid() {
+            const weight = parseFloat(document.getElementById('acid_weight').value);
+            const hco3Curr = parseFloat(document.getElementById('acid_hco3_curr').value);
+            const hco3Target = parseFloat(document.getElementById('acid_hco3_target').value);
+
+            const deficit = 0.5 * weight * (hco3Target - hco3Curr);
+            const resDiv = document.getElementById('result_acid');
+            resDiv.classList.remove('hidden');
+
+            resDiv.innerHTML = `
+                <div>
+                    <p class="text-xs uppercase font-black text-amber-300 mb-2">HCO3 Deficit</p>
+                    <p class="text-6xl font-black mb-2">${Math.round(deficit)} <span class="text-2xl tracking-tighter">mEq</span></p>
+                    <p class="text-sm italic opacity-80 mt-4 text-amber-100">Estimasi dosis Natrium Bikarbonat untuk mencapai target serum HCO3 ${hco3Target} mEq/L.</p>
+                </div>
+            `;
+        }
+
+        // Hyper/Hypo Na Functions
+        function calculateHyper() {
+            const weight = parseFloat(document.getElementById('hiper_weight').value);
+            const naCurrent = parseFloat(document.getElementById('hiper_na_current').value);
+            const naTarget = parseFloat(document.getElementById('hiper_na_target').value);
+            const fluidNa = parseFloat(document.getElementById('hiper_fluid').value);
+            const tbw = weight * 0.6;
+            const deltaNa = (fluidNa - naCurrent) / (tbw + 1);
+            const totalVol = ((naTarget - naCurrent) / deltaNa) * 1000;
+            const resDiv = document.getElementById('result_hiper');
+            resDiv.classList.remove('hidden');
+            resDiv.innerHTML = `<div class="bg-red-900 text-white p-6 rounded-2xl mt-4">Total Deficit Volume: <b>${Math.round(totalVol)} mL</b></div>`;
+        }
+
+        function calculateHypo() {
+            const weight = parseFloat(document.getElementById('hipo_weight').value);
+            const naCurrent = parseFloat(document.getElementById('hipo_na_current').value);
+            const naFluid = parseFloat(document.getElementById('hipo_fluid').value);
+            const tbw = weight * 0.6;
+            const deltaNa = (naFluid - naCurrent) / (tbw + 1);
+            const resDiv = document.getElementById('result_hipo');
+            resDiv.classList.remove('hidden');
+            resDiv.innerHTML = `<div class="bg-indigo-900 text-white p-6 rounded-2xl mt-4 text-center">Predicted Na Increase per 1L: <b>${deltaNa.toFixed(2)} mEq/L</b></div>`;
+        }
+
+        document.getElementById("defaultOpen").click();
+    </script>
+</body>
+</html>
